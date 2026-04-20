@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rajasthan</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: url('https://www.peakadventuretour.com/assets/imgs/rajasthan-tourism-01.webp') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .logo {
+      font-size: 64px;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+    }
+
+    .logo span:nth-child(2) { color: #ea4335; }
+    .logo span:nth-child(3) { color: #fbbc05; }
+    .logo span:nth-child(4) { color: #34a853; }
+    .logo span:nth-child(5) { color: #ea4335; }
+    .logo span:nth-child(6) { color: #fbbc05; }
+    .logo span:nth-child(7) { color: #4285f4; }
+    .logo span:nth-child(8) { color: #34a853; }
+    .logo span:nth-child(9) { color: #ea4335; }
+
+    .search-box {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: 1px solid #dcdcdc;
+      border-radius: 24px;
+      outline: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .buttons {
+      margin-top: 20px;
+    }
+
+    .buttons input {
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid #dcdcdc;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .buttons input:hover {
+      background-color: #e0e0e0;
+    }
+
+    .results {
+      margin-top: 30px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 600px;
+    }
+
+    .result-item {
+      margin-bottom: 20px;
+    }
+
+    .result-item h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .result-item a {
+      text-decoration: none;
+      color: #1a0dab;
+    }
+
+    .result-item p {
+      margin: 5px 0 0;
+      font-size: 14px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">
+    <span>R</span><span>a</span><span>j</span><span>a</span><span>s</span><span>t</span><span>h</span><span>a</span><span>n</span>
+  </div>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search Rajasthan or type a place..." />
+    <div class="buttons">
+      <input type="button" value="Search Rajasthan" onclick="searchNow()" />
+     
+    </div>
+  </div>
+
+  <div class="results" id="resultsBox" style="display: none;"></div>
+
+  <script>
+    function searchNow() {
+      const query = document.getElementById("searchInput").value.trim();
+      if (!query) return;
+
+      fetch(`/search?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+          const resultsDiv = document.getElementById("resultsBox");
+          resultsDiv.innerHTML = "";
+          if (data.length === 0 || data.error) {
+            resultsDiv.innerHTML = "<p>No results found or error occurred.</p>";
+          } else {
+            data.forEach(item => {
+              const div = document.createElement("div");
+              div.className = "result-item";
+              div.innerHTML = `
+                <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
+                <p>${item.snippet}</p>
+              `;
+              resultsDiv.appendChild(div);
+            });
+          }
+          resultsDiv.style.display = "block";
+        })
+        .catch(err => {
+          document.getElementById("resultsBox").innerHTML = "<p>Error fetching results.</p>";
+        });
+    }
+  </script>
+
+</body>
+</html>
